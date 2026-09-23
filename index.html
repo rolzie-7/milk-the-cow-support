@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Milk the Cow — Support</title>
+  <style>
+    :root {
+      --mint: #dcf3e4;
+      --ink: #1a1a1a;
+      --sub: #5a645f;
+      --card: #ffffff;
+      --accent: #34c759;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      background: var(--mint);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      line-height: 1.6;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 24px;
+      max-width: 560px;
+      width: 100%;
+      padding: 48px 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+    }
+    .cow { font-size: 56px; }
+    h1 { font-size: 32px; margin: 12px 0 4px; }
+    .tagline { color: var(--sub); font-size: 17px; margin-bottom: 32px; }
+    h2 { font-size: 20px; margin: 28px 0 8px; }
+    p { color: var(--sub); font-size: 16px; }
+    a.btn {
+      display: inline-block;
+      margin-top: 8px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      padding: 12px 24px;
+      border-radius: 999px;
+    }
+    .faq { margin-top: 12px; }
+    .faq details {
+      background: #f5f6f7;
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+    }
+    .faq summary { font-weight: 600; cursor: pointer; font-size: 16px; }
+    .faq p { margin-top: 8px; }
+    footer { margin-top: 32px; color: var(--sub); font-size: 13px; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="cow">🐄</div>
+    <h1>Milk the Cow — Support</h1>
+    <p class="tagline">Track your sessions, build your streak, compete with friends.</p>
+
+    <h2>Need help?</h2>
+    <p>Questions, bugs, or feedback? We're happy to help and usually reply within 48 hours.</p>
+    <a class="btn" href="mailto:rolzie@gmail.com?subject=Milk%20the%20Cow%20Support">Email Support</a>
+
+    <h2>FAQ</h2>
+    <div class="faq">
+      <details>
+        <summary>Do I need to create an account?</summary>
+        <p>No. The app works fully offline without signing in. Signing in is optional and only used to sync your data across devices and unlock friends and leaderboards.</p>
+      </details>
+      <details>
+        <summary>Does my data sync between iPhone and Apple Watch?</summary>
+        <p>Yes. When you're signed in, your sessions, streak, and stats sync automatically across your devices. Your data is always kept on-device too, so nothing is lost offline.</p>
+      </details>
+      <details>
+        <summary>How do I add a friend?</summary>
+        <p>Open the Friends tab, tap the + button, and enter your friend's code. You can find and share your own code on the Profile screen.</p>
+      </details>
+      <details>
+        <summary>How do I delete my account or data?</summary>
+        <p>Email us at the address above and we'll remove your account and all associated data.</p>
+      </details>
+    </div>
+
+    <footer>© 2026 Milk the Cow. All rights reserved.</footer>
+  </main>
+</body>
+</html>
