@@ -68,7 +68,7 @@
 
     <h2>Need help?</h2>
     <p>Questions, bugs, or feedback? We're happy to help and usually reply within 48 hours.</p>
-    <a class="btn" href="mailto:rolzie@gmail.com?subject=Milk%20the%20Cow%20Support">Email Support</a>
+    <a class="btn" id="support-email" href="#">Email Support</a>
 
     <h2>FAQ</h2>
     <div class="faq">
@@ -86,11 +86,22 @@
       </details>
       <details>
         <summary>How do I delete my account or data?</summary>
-        <p>Email us at the address above and we'll remove your account and all associated data.</p>
+        <p>Use the Email Support button above and we'll remove your account and all associated data.</p>
       </details>
     </div>
 
     <footer>© 2026 Milk the Cow. All rights reserved.</footer>
   </main>
+
+  <script>
+    // Assemble the support address at runtime so it is not present as
+    // plaintext in the page source (basic anti-scraping).
+    (function () {
+      var user = ["rolzie", "gmail", "com"];
+      var addr = user[0] + "@" + user[1] + "." + user[2];
+      var link = document.getElementById("support-email");
+      link.href = "mai" + "lto:" + addr + "?subject=" + encodeURIComponent("Milk the Cow Support");
+    })();
+  </script>
 </body>
 </html>
