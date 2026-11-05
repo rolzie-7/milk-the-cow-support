@@ -135,7 +135,18 @@
   .store svg { width: 30px; height: 30px; fill: currentColor; flex: none; }
   .store small { display: block; font-size: 13px; font-weight: 600; line-height: 1.1; }
   .store strong { display: block; font-family: var(--display); font-weight: 400; font-size: 24px; line-height: 1.1; }
-  .get p { font-size: 15px; }
+  .get-row { display: flex; flex-wrap: wrap; gap: 18px 16px; align-items: flex-start; }
+  /* not yet available, so not a link and not the accent */
+  .soon {
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 13px 26px 13px 20px;
+    border: 2px solid var(--milk-soft); border-radius: 18px;
+    color: var(--milk-soft);
+  }
+  .soon svg { width: 30px; height: 30px; fill: currentColor; flex: none; }
+  .soon small { display: block; font-size: 13px; font-weight: 600; line-height: 1.1; }
+  .soon strong { display: block; font-family: var(--display); font-weight: 400; font-size: 24px; line-height: 1.1; }
+  .get p { font-size: 15px; max-width: 30em; }
   .band--pasture .get p { color: var(--milk-soft); }
 
   /* ---------- devices ---------- */
@@ -255,12 +266,17 @@
         <h1 class="display">Milk it every day.</h1>
         <p class="lede">Milk the Cow logs each session from your Apple Watch, keeps your daily streak going, and ranks you against your friends.</p>
         <div class="get" id="get">
-          <!-- Replace href with the App Store (or TestFlight) link once it is live. -->
-          <a class="store" href="#get">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.9c0-2 1.6-3 1.7-3-.9-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.2 2-1.4 2.4-.4 5.9 1 7.9.7 1 1.4 2 2.4 2 1 0 1.3-.6 2.5-.6s1.5.6 2.5.6 1.7-1 2.3-2c.7-1.1 1-2.2 1-2.2s-1.9-.7-1.9-2.8zM14.6 6.3c.5-.6.9-1.5.8-2.3-.8 0-1.7.5-2.2 1.1-.5.5-.9 1.4-.8 2.2.9.1 1.7-.4 2.2-1z"/></svg>
-            <span><small>Coming soon to the</small><strong>App Store</strong></span>
-          </a>
-          <p>For iPhone and Apple Watch. Free, no account needed.</p>
+          <div class="get-row">
+            <a class="store" href="https://testflight.apple.com/join/WaJ456H2" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.7 2.3a1 1 0 0 0-1-.2L3 8.6a1 1 0 0 0-.1 1.8l6.6 3.3 3.3 6.6a1 1 0 0 0 1.8-.1L21.9 3.3a1 1 0 0 0-.2-1zM13.4 17.3l-2.1-4.2 4.3-4.3-1.4-1.4-4.3 4.3-4.2-2.1 12.3-4.5z"/></svg>
+              <span><small>Join the beta on</small><strong>TestFlight</strong></span>
+            </a>
+            <div class="soon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.9c0-2 1.6-3 1.7-3-.9-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.2 2-1.4 2.4-.4 5.9 1 7.9.7 1 1.4 2 2.4 2 1 0 1.3-.6 2.5-.6s1.5.6 2.5.6 1.7-1 2.3-2c.7-1.1 1-2.2 1-2.2s-1.9-.7-1.9-2.8zM14.6 6.3c.5-.6.9-1.5.8-2.3-.8 0-1.7.5-2.2 1.1-.5.5-.9 1.4-.8 2.2.9.1 1.7-.4 2.2-1z"/></svg>
+              <span><small>Coming soon to the</small><strong>App Store</strong></span>
+            </div>
+          </div>
+          <p>For iPhone and Apple Watch. Free, no account needed. The beta installs through Apple's TestFlight app.</p>
         </div>
       </div>
       <figure class="stage">
@@ -337,11 +353,16 @@
       <h2 class="display">Start your streak today.</h2>
       <p class="lede">Free to use, with no account required. Sign in only if you want to sync between devices and add friends.</p>
       <div class="get">
-        <!-- Replace href with the App Store (or TestFlight) link once it is live. -->
-        <a class="store" href="#get">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.9c0-2 1.6-3 1.7-3-.9-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.2 2-1.4 2.4-.4 5.9 1 7.9.7 1 1.4 2 2.4 2 1 0 1.3-.6 2.5-.6s1.5.6 2.5.6 1.7-1 2.3-2c.7-1.1 1-2.2 1-2.2s-1.9-.7-1.9-2.8zM14.6 6.3c.5-.6.9-1.5.8-2.3-.8 0-1.7.5-2.2 1.1-.5.5-.9 1.4-.8 2.2.9.1 1.7-.4 2.2-1z"/></svg>
-          <span><small>Coming soon to the</small><strong>App Store</strong></span>
-        </a>
+        <div class="get-row">
+          <a class="store" href="https://testflight.apple.com/join/WaJ456H2" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.7 2.3a1 1 0 0 0-1-.2L3 8.6a1 1 0 0 0-.1 1.8l6.6 3.3 3.3 6.6a1 1 0 0 0 1.8-.1L21.9 3.3a1 1 0 0 0-.2-1zM13.4 17.3l-2.1-4.2 4.3-4.3-1.4-1.4-4.3 4.3-4.2-2.1 12.3-4.5z"/></svg>
+            <span><small>Join the beta on</small><strong>TestFlight</strong></span>
+          </a>
+          <div class="soon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.9c0-2 1.6-3 1.7-3-.9-1.4-2.4-1.6-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.2 2-1.4 2.4-.4 5.9 1 7.9.7 1 1.4 2 2.4 2 1 0 1.3-.6 2.5-.6s1.5.6 2.5.6 1.7-1 2.3-2c.7-1.1 1-2.2 1-2.2s-1.9-.7-1.9-2.8zM14.6 6.3c.5-.6.9-1.5.8-2.3-.8 0-1.7.5-2.2 1.1-.5.5-.9 1.4-.8 2.2.9.1 1.7-.4 2.2-1z"/></svg>
+            <span><small>Coming soon to the</small><strong>App Store</strong></span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
