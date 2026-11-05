@@ -10,7 +10,10 @@
   /* Layout: left-aligned bands that alternate pasture and milk; every device
      sits on a Holstein spot. Color follows 60/30/10: pasture carries the page,
      milk carries the reading sections, udder pink appears only on the one
-     button we want pressed (and the keyboard focus ring). */
+     button we want pressed (and the keyboard focus ring).
+     Three parts of the page are playable: a session on the watch in the hero,
+     the streak week strip, and a frequency challenge beside the leaderboard.
+     They share one demo state and use the app's own XP and streak rules. */
   :root {
     color-scheme: light;
     --pasture: #1C5B38;       /* 60: main */
@@ -23,8 +26,24 @@
     --ink-soft: #3D5646;      /* secondary text on milk */
     --milk-soft: #CFE0CC;     /* secondary text on pasture */
 
+    /* colors that belong to the app screens shown inside the device mocks */
+    --ios-bg: #FFFFFF;
+    --ios-group: #F2F2F7;
+    --ios-ink: #111111;
+    --ios-gray: #8A8A8E;
+    --ios-blue: #007AFF;
+    --ios-green: #34C759;
+    --ios-red: #FF3B30;
+    --ios-orange: #FF9500;
+    --ios-avatar: #CDEFD6;
+    --wos-bg: #000000;
+    --wos-ink: #FFFFFF;
+    --wos-pill: #333336;
+
     --display: "Bagel Fat One", "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
     --body: "Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --ui-round: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
 
     --gutter-l: max(24px, env(safe-area-inset-left, 0px));
     --gutter-r: max(24px, env(safe-area-inset-right, 0px));
@@ -42,6 +61,7 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   html { scroll-behavior: smooth; }
   body {
     margin: 0;
@@ -57,6 +77,7 @@
   h1, h2, p, ol, dl, dd, figure { margin: 0; }
   ol { padding: 0; list-style: none; }
   a { color: inherit; }
+  button { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; }
   :focus-visible { outline: 3px solid var(--udder); outline-offset: 4px; border-radius: 6px; }
 
   .wrap {
@@ -113,10 +134,10 @@
   .spot--a { border-radius: 58% 42% 63% 37% / 47% 58% 42% 53%; }
   .spot--b { border-radius: 41% 59% 38% 62% / 60% 37% 63% 40%; }
   .spot--c { border-radius: 66% 34% 52% 48% / 38% 62% 38% 62%; }
-  .hero .spot { background: var(--pasture-deep); }
-  .hero .spot--a { width: 300px; height: 240px; left: -110px; top: 52%; transform: rotate(-14deg); }
-  .hero .spot--b { width: 190px; height: 150px; left: 36%; top: -60px; transform: rotate(20deg); }
-  .hero .spot--c { width: 120px; height: 100px; left: 30%; bottom: 34px; transform: rotate(8deg); }
+  .hero > .spot { background: var(--pasture-deep); }
+  .hero > .spot--a { width: 300px; height: 240px; left: -110px; top: 52%; rotate: -14deg; }
+  .hero > .spot--b { width: 190px; height: 150px; left: 36%; top: -60px; rotate: 20deg; }
+  .hero > .spot--c { width: 120px; height: 100px; left: 30%; bottom: 34px; rotate: 8deg; }
   .hero .wrap { position: relative; }
 
   /* ---------- the one button ---------- */
@@ -150,10 +171,10 @@
   .band--pasture .get p { color: var(--milk-soft); }
 
   /* ---------- devices ---------- */
-  .stage { position: relative; display: grid; place-items: center; padding-block: 28px; }
-  .stage .spot { inset: 0; margin: auto; width: min(118%, 520px); height: 86%; }
-  .band--pasture .stage .spot { background: var(--milk); }
-  .band--milk .stage .spot { background: var(--milk-shade); }
+  .stage { position: relative; display: grid; justify-items: center; align-content: center; gap: 26px; padding-block: 28px; }
+  .stage > .spot { inset: 0; margin: auto; width: min(118%, 520px); height: 86%; }
+  .band--pasture .stage > .spot { background: var(--milk); }
+  .band--milk .stage > .spot { background: var(--milk-shade); }
 
   .phone {
     position: relative;
@@ -163,7 +184,7 @@
     border-radius: 44px;
     box-shadow: 0 24px 40px -18px rgba(14, 38, 24, .55);
   }
-  .phone img { border-radius: 36px; }
+  .phone img, .phone .screen { border-radius: 36px; }
   .watch {
     position: relative;
     width: clamp(132px, 15vw, 176px);
@@ -172,21 +193,118 @@
     border-radius: 36px;
     box-shadow: 0 20px 34px -16px rgba(14, 38, 24, .6);
   }
-  .watch img { border-radius: 29px; }
-
-  .hero .phone { transform: rotate(4deg); }
-  .hero .watch { position: absolute; left: 2%; bottom: 6%; transform: rotate(-7deg); }
+  .watch img, .watch .screen { border-radius: 29px; }
 
   .pair { position: relative; display: flex; gap: clamp(14px, 2.4vw, 28px); align-items: center; justify-content: center; }
   .pair .watch { width: clamp(140px, 18vw, 216px); padding: 9px; border-radius: 42px; }
   .pair .watch img { border-radius: 34px; }
   .pair .watch:first-child { transform: rotate(-5deg) translateY(-14px); }
   .pair .watch:last-child { transform: rotate(4deg) translateY(14px); }
-  .pair .phone { width: clamp(150px, 19vw, 232px); padding: 7px; border-radius: 36px; }
-  .pair .phone img { border-radius: 30px; }
-  .pair .phone:first-child { transform: rotate(-4deg) translateY(16px); }
-  .pair .phone:last-child { transform: rotate(3deg) translateY(-16px); }
   .tilt-l { transform: rotate(-3deg); }
+
+  /* screenshots lean toward the pointer */
+  .lean { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .25s ease-out; }
+
+  /* ---------- playable rigs: a live phone and a live watch ---------- */
+  .rig { position: relative; display: flex; align-items: flex-end; justify-content: center; }
+  .rig .phone { width: clamp(216px, 21vw, 268px); }
+  .rig .watch { width: clamp(150px, 16vw, 200px); z-index: 2; margin-bottom: 9%; touch-action: manipulation; }
+  .rig--session .watch { margin-right: -20px; rotate: -5deg; }
+  .rig--session .phone { rotate: 3deg; }
+  .rig--challenge .watch { margin-left: -20px; rotate: 5deg; }
+  .rig--challenge .phone { rotate: -3deg; }
+  /* the demo's running commentary sits on its own ink chip so it reads on spot or band */
+  .hint { position: relative; font-size: 15px; line-height: 1.4; font-weight: 600; text-align: center; max-width: 27em; padding: 10px 18px; border-radius: 16px; background: var(--ink); color: var(--milk); }
+
+  .screen { position: relative; overflow: hidden; container-type: inline-size; user-select: none; -webkit-user-select: none; }
+  .phone .screen { aspect-ratio: 1206 / 2622; background: var(--ios-bg); color: var(--ios-ink); font-family: var(--ui); }
+  .watch .screen { aspect-ratio: 422 / 514; background: var(--wos-bg); color: var(--wos-ink); font-family: var(--ui-round); }
+
+  /* iPhone screens, measured in cqw so they scale with the frame */
+  .ios { position: absolute; inset: 0; display: flex; flex-direction: column; font-size: 4cqw; line-height: 1.2; }
+  .ios small { display: block; color: var(--ios-gray); font-size: 3cqw; }
+  .ios-status { position: relative; display: flex; justify-content: space-between; align-items: center; padding: 5.2cqw 8cqw 0; font-size: 4.4cqw; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .ios-status::after { content: ""; position: absolute; left: 50%; top: 3.6cqw; width: 31cqw; height: 9cqw; margin-left: -15.5cqw; border-radius: 9cqw; background: #000; }
+  .ios-batt { width: 6.6cqw; height: 3.2cqw; border-radius: 1cqw; background: var(--ios-ink); }
+  .ios-body { flex: 1; display: flex; flex-direction: column; gap: 4cqw; padding: 0 4cqw; }
+  .dash-head { display: grid; justify-items: center; gap: 1cqw; padding-top: 9cqw; }
+  .dash-head span { font-size: 11cqw; line-height: 1; }
+  .dash-head b { font-size: 7.2cqw; }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 3.2cqw; }
+  .tile, .card { background: var(--ios-group); border-radius: 4cqw; padding: 4cqw; }
+  .tile { display: grid; justify-items: center; gap: 1cqw; }
+  .tile span { font-size: 6cqw; line-height: 1.1; }
+  .tile b { font-size: 5.2cqw; }
+  .card > b { display: block; font-size: 4.6cqw; margin-bottom: 2.4cqw; }
+  .trio { display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; }
+  .trio b { font-size: 4.2cqw; }
+  .trio small { font-size: 2.7cqw; }
+  .bar { height: 1.2cqw; border-radius: 1cqw; background: #D8D8DD; overflow: hidden; margin: 2cqw 0; }
+  .bar i { display: block; height: 100%; width: 0; background: var(--ios-green); border-radius: inherit; transition: width .5s ease; }
+  .tabbar { display: grid; grid-template-columns: repeat(4, 1fr); margin: 0 4cqw 4cqw; padding: 1.4cqw; border-radius: 10cqw; background: var(--ios-bg); box-shadow: 0 1cqw 5cqw rgba(0, 0, 0, .12); font-size: 2.6cqw; font-weight: 600; text-align: center; }
+  .tabbar span { display: grid; justify-items: center; gap: .6cqw; padding: 1.8cqw 0; border-radius: 8cqw; }
+  .tabbar svg { width: 6cqw; height: 6cqw; fill: currentColor; }
+  .tabbar .on { color: var(--ios-blue); background: var(--ios-group); }
+
+  .ios--list { background: var(--ios-group); }
+  .ios-title { font-size: 8.4cqw; font-weight: 700; padding-top: 12cqw; }
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); background: #E3E3E8; border-radius: 3cqw; padding: .7cqw; font-size: 3.3cqw; font-weight: 500; text-align: center; }
+  .seg span { padding: 1.5cqw 0; border-radius: 2.4cqw; }
+  .seg .on { background: var(--ios-bg); box-shadow: 0 .4cqw 1.4cqw rgba(0, 0, 0, .12); }
+  .lb { background: var(--ios-bg); border-radius: 5cqw; padding: 0 4cqw; margin: 2cqw 0 0; list-style: none; }
+  .lb li { display: grid; grid-template-columns: 8cqw 9cqw minmax(0, 1fr) auto; gap: 2.6cqw; align-items: center; padding: 3.6cqw 0; border-bottom: .3cqw solid var(--ios-group); background: var(--ios-bg); }
+  .lb li:last-child { border-bottom: 0; }
+  .lb-rank { font-size: 3.5cqw; font-weight: 700; color: var(--ios-gray); }
+  .lb-rank.is-top { color: var(--ios-orange); }
+  .lb-av { width: 9cqw; height: 9cqw; border-radius: 50%; background: var(--ios-avatar); color: var(--ios-green); display: grid; place-items: center; font-weight: 700; font-size: 4cqw; }
+  .lb-name b { display: block; font-size: 4cqw; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lb-score { text-align: right; }
+  .lb-score b { font-size: 3.8cqw; }
+  .lb .is-you .lb-av { background: var(--ios-green); color: var(--ios-bg); }
+
+  /* Apple Watch screens */
+  .wos { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 4cqw 5cqw 5cqw; font-size: 6cqw; line-height: 1.15; text-align: center; }
+  .w-top { display: flex; justify-content: space-between; align-items: center; min-height: 13cqw; font-size: 8cqw; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .w-back { width: 13cqw; height: 13cqw; border-radius: 50%; background: var(--wos-pill); display: grid; place-items: center; }
+  .w-back svg { width: 6cqw; height: 6cqw; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .w-title { font-size: 7.6cqw; font-weight: 700; text-align: left; margin: 5cqw 0 6cqw; }
+  .w-pill { display: flex; align-items: center; gap: 4cqw; width: 100%; min-height: 25cqw; padding: 0 8cqw; margin-bottom: 5cqw; border-radius: 13cqw; background: var(--wos-pill); font-size: 7.4cqw; font-weight: 500; }
+  .w-pill.is-off { opacity: .45; }
+  .w-pill i { flex: none; width: 7cqw; height: 7cqw; border-radius: 50%; background: var(--ios-green); display: grid; place-items: center; font-style: normal; font-size: 5.6cqw; }
+  .w-pill i.plain { background: none; }
+  .w-pill i svg { width: 3.6cqw; height: 3.6cqw; fill: #000; }
+  button.w-pill:active { filter: brightness(1.4); }
+
+  .w-pad { position: relative; flex: 1; width: 100%; display: grid; place-content: center; gap: 1cqw; border-radius: 6cqw; }
+  .w-ghost { position: absolute; inset: 0; display: grid; place-items: center; font-size: 46cqw; opacity: .16; filter: blur(1.4cqw); pointer-events: none; }
+  .w-time { position: relative; font-size: 15cqw; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .w-heart { position: relative; font-size: 6.4cqw; opacity: .85; }
+  .w-heart::before { content: "♥ "; color: var(--ios-red); }
+  .w-go { width: 100%; min-height: 23cqw; border-radius: 12cqw; background: var(--ios-green); color: #000; font-size: 7.4cqw; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 3cqw; }
+  .w-go svg { width: 5.4cqw; height: 5.4cqw; fill: currentColor; }
+  .w-go.is-stop { background: var(--ios-red); color: #fff; }
+  .w-stats { font-size: 5.6cqw; opacity: .9; margin-top: 3.4cqw; min-height: 7cqw; }
+
+  .w-party { font-size: 13cqw; line-height: 1; margin-top: -3cqw; }
+  .w-done { font-size: 8.6cqw; font-weight: 700; margin-top: 1.4cqw; }
+  .w-sub { font-size: 5cqw; opacity: .6; margin-bottom: 4cqw; }
+  .w-rows { display: grid; gap: 2.6cqw; text-align: left; font-size: 5.6cqw; }
+  .w-rows div { display: flex; justify-content: space-between; align-items: baseline; gap: 3cqw; }
+  .w-rows span::before { content: "●"; color: var(--ios-green); font-size: 3.6cqw; margin-right: 2.4cqw; vertical-align: middle; }
+  .w-rows b { font-size: 6.4cqw; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .w-head { font-size: 8cqw; font-weight: 700; margin-top: 1cqw; }
+  .w-label { font-size: 5.6cqw; text-align: left; margin-top: 4cqw; opacity: .9; }
+  .w-step { display: flex; align-items: center; justify-content: space-between; margin: 3cqw 0 2cqw; }
+  .w-step button { width: 18cqw; height: 18cqw; border-radius: 50%; background: var(--wos-pill); font-size: 10cqw; font-weight: 600; line-height: 1; }
+  .w-step b { font-size: 13cqw; font-variant-numeric: tabular-nums; }
+  .w-step b small { font-size: 5.6cqw; font-weight: 500; opacity: .8; }
+  .w-start { width: 100%; min-height: 21cqw; border-radius: 11cqw; background: var(--wos-pill); color: var(--ios-red); font-size: 7cqw; font-weight: 600; margin-top: auto; }
+  .w-note { font-size: 4.8cqw; opacity: .7; margin-top: 3cqw; }
+  .w-count { flex: 1; display: grid; place-items: center; font-size: 46cqw; font-weight: 700; }
+  .w-beat { position: absolute; inset: 0; margin: auto; width: 62cqw; height: 62cqw; border-radius: 50%; border: 1.6cqw solid var(--ios-green); opacity: 0; pointer-events: none; }
+  .is-beating .w-beat { animation: beat var(--beat, .33s) ease-out infinite; }
+  @keyframes beat { from { transform: scale(.55); opacity: .9; } to { transform: scale(1.12); opacity: 0; } }
 
   /* ---------- session metrics ---------- */
   .metrics { width: 100%; max-width: 31em; border-top: 2px solid var(--milk-shade); }
@@ -196,6 +314,23 @@
   }
   .metrics dt { font-weight: 700; }
   .metrics dd { color: var(--ink-soft); }
+
+  /* ---------- streak week strip ---------- */
+  .week { display: grid; gap: 16px; width: 100%; max-width: 31em; }
+  .week-read { display: flex; align-items: baseline; gap: 12px; font-weight: 600; }
+  .week-read b { font-family: var(--display); font-weight: 400; font-size: clamp(56px, 7vw, 84px); line-height: .9; font-variant-numeric: tabular-nums; }
+  .week-days { display: flex; flex-wrap: wrap; gap: 10px; }
+  .week-days button {
+    width: 58px; height: 52px; font-size: 14px; font-weight: 700;
+    background: var(--pasture-deep); color: var(--milk-soft);
+    transition: background-color .15s ease, color .15s ease, transform .15s ease;
+  }
+  .week-days button:nth-child(3n+1) { border-radius: 58% 42% 63% 37% / 47% 58% 42% 53%; }
+  .week-days button:nth-child(3n+2) { border-radius: 41% 59% 38% 62% / 60% 37% 63% 40%; }
+  .week-days button:nth-child(3n) { border-radius: 66% 34% 52% 48% / 38% 62% 38% 62%; }
+  .week-days button:hover { transform: translateY(-2px); }
+  .week-days button[aria-pressed="true"] { background: var(--milk); color: var(--ink); }
+  .week p { min-height: 3.1em; }
 
   /* ---------- add-a-friend steps (a real sequence) ---------- */
   .steps { display: grid; gap: 14px; counter-reset: step; max-width: 31em; }
@@ -209,9 +344,9 @@
 
   /* ---------- closing ---------- */
   .close { position: relative; overflow: hidden; }
-  .close .spot { background: var(--pasture-deep); }
-  .close .spot--a { width: 340px; height: 270px; right: -90px; top: -70px; transform: rotate(18deg); }
-  .close .spot--c { width: 150px; height: 120px; right: 22%; bottom: -40px; transform: rotate(-10deg); }
+  .close > .spot { background: var(--pasture-deep); }
+  .close > .spot--a { width: 340px; height: 270px; right: -90px; top: -70px; rotate: 18deg; }
+  .close > .spot--c { width: 150px; height: 120px; right: 22%; bottom: -40px; rotate: -10deg; }
   .close .wrap { position: relative; }
   .close .text { gap: 26px; }
 
@@ -221,12 +356,12 @@
   footer a { color: var(--milk); font-weight: 600; text-decoration: none; }
   footer a:hover { text-decoration: underline; text-underline-offset: 4px; }
 
-  /* one load moment: the hero devices settle onto their spot */
-  @media (prefers-reduced-motion: no-preference) {
-    .hero .phone { animation: settle-phone .7s cubic-bezier(.2, .9, .3, 1.2) both; }
-    .hero .watch { animation: settle-watch .7s .08s cubic-bezier(.2, .9, .3, 1.2) both; }
-    @keyframes settle-phone { from { transform: rotate(10deg) translateY(26px); } to { transform: rotate(4deg) translateY(0); } }
-    @keyframes settle-watch { from { transform: rotate(-16deg) translateY(30px); } to { transform: rotate(-7deg) translateY(0); } }
+  .bit { position: absolute; left: 50%; top: 50%; width: 14px; height: 12px; pointer-events: none; z-index: 3; border-radius: 58% 42% 63% 37% / 47% 58% 42% 53%; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lean { transform: none; }
+    .is-beating .w-beat { animation: none; opacity: .5; }
+    .bar i { transition: none; }
   }
 
   @media (max-width: 820px) {
@@ -234,21 +369,24 @@
     :root { --gutter-l: max(20px, env(safe-area-inset-left, 0px)); --gutter-r: max(20px, env(safe-area-inset-right, 0px)); }
     .split, .hero .split { grid-template-columns: minmax(0, 1fr); }
     .stage { order: 2; }
-    .stage .spot { width: min(100%, 440px); }
-    .hero .spot--b { left: 62%; }
-    .hero .spot--c { display: none; }
-    .hero .watch { left: 6%; }
+    .stage > .spot { width: min(100%, 440px); }
+    .hero > .spot--b { left: 62%; }
+    .hero > .spot--c { display: none; }
     .top nav { gap: 20px; }
     .metrics div { grid-template-columns: minmax(0, 1fr); }
+    .rig--session .watch { margin-right: -22px; }
+    .rig--challenge .watch { margin-left: -22px; }
+    .week-days button { width: 44px; height: 46px; font-size: 13px; }
+    .week-days { gap: 6px; }
   }
 </style>
 </head>
 <body>
 
 <div class="hero band--pasture">
-  <div class="spot spot--a"></div>
-  <div class="spot spot--b"></div>
-  <div class="spot spot--c"></div>
+  <div class="spot spot--a" data-drift="0.06"></div>
+  <div class="spot spot--b" data-drift="-0.05"></div>
+  <div class="spot spot--c" data-drift="0.1"></div>
 
   <header class="top">
     <div class="wrap">
@@ -279,10 +417,90 @@
           <p>For iPhone and Apple Watch. Free, no account needed. The beta installs through Apple's TestFlight app.</p>
         </div>
       </div>
-      <figure class="stage">
+
+      <!-- Playable demo 1: log a session on the watch, the phone updates -->
+      <figure class="stage" id="demo-session">
         <div class="spot spot--a"></div>
-        <div class="phone"><img src="assets/phone-dashboard.png" width="1206" height="2622" alt="The Milk the Cow dashboard on iPhone, showing the current streak, total XP, weekly and monthly totals, and the daily goal" /></div>
-        <div class="watch"><img src="assets/watch-menu.png" width="422" height="514" alt="The Apple Watch menu with Log Session, History and Challenges" /></div>
+        <div class="rig rig--session">
+          <div class="watch">
+            <div class="screen">
+              <div class="wos" data-view="menu">
+                <div class="w-top"><span></span><span class="js-clock">16:52</span></div>
+                <div class="w-title">Milk the Cow 🐮</div>
+                <button type="button" class="w-pill" id="s-open"><i><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M3 1.6v6.8L8.6 5z"/></svg></i>Log Session</button>
+                <div class="w-pill is-off" aria-hidden="true"><i class="plain">📊</i>History</div>
+                <div class="w-pill is-off" aria-hidden="true"><i class="plain">🏆</i>Challenges</div>
+              </div>
+              <div class="wos" data-view="play" hidden>
+                <div class="w-top">
+                  <button type="button" class="w-back" id="s-back" aria-label="Back to the watch menu"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M7.5 2 3.5 6l4 4"/></svg></button>
+                  <span class="js-clock">16:52</span>
+                </div>
+                <button type="button" class="w-pad" id="s-pad" aria-label="Count one motion">
+                  <span class="w-ghost" aria-hidden="true">🐮</span>
+                  <span class="w-time" id="s-time">00:00</span>
+                  <span class="w-heart">0</span>
+                </button>
+                <button type="button" class="w-go" id="s-toggle"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2.5 1.2v7.6L9 5z"/></svg><span>Start</span></button>
+                <div class="w-stats" id="s-stats">Tap Start to begin</div>
+              </div>
+              <div class="wos" data-view="done" hidden>
+                <div class="w-top">
+                  <button type="button" class="w-back" id="s-done" aria-label="Back to the watch menu"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M7.5 2 3.5 6l4 4"/></svg></button>
+                  <span class="js-clock">16:59</span>
+                </div>
+                <div class="w-party" aria-hidden="true">🎉</div>
+                <div class="w-done">Session Complete!</div>
+                <div class="w-sub">Great work! Keep it up.</div>
+                <div class="w-rows">
+                  <div><span>Duration</span><b id="r-dur">00:00</b></div>
+                  <div><span>Motion Count</span><b id="r-count">0</b></div>
+                  <div><span>Frequency</span><b id="r-freq">0.0/sec</b></div>
+                  <div><span>Heart Rate</span><b>--</b></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="phone">
+            <div class="screen">
+              <div class="ios">
+                <div class="ios-status"><span class="js-clock">16:53</span><span class="ios-batt"></span></div>
+                <div class="ios-body">
+                  <div class="dash-head"><span aria-hidden="true">🐮</span><b>Milk the Cow</b></div>
+                  <div class="tiles">
+                    <div class="tile"><span aria-hidden="true">🔥</span><b id="d-streak">0 days</b><small>Current Streak</small></div>
+                    <div class="tile"><span aria-hidden="true">⭐</span><b id="d-xp">0</b><small>Total XP</small></div>
+                  </div>
+                  <div class="card"><b>This Week</b>
+                    <div class="trio">
+                      <div><b id="d-wk-n">0</b><small>Total Sessions</small></div>
+                      <div><b id="d-wk-avg">0s</b><small>Avg Duration</small></div>
+                      <div><b id="d-wk-xp">0</b><small>XP</small></div>
+                    </div>
+                  </div>
+                  <div class="card"><b>This Month</b>
+                    <div class="trio">
+                      <div><b id="d-mo-n">0</b><small>Total Sessions</small></div>
+                      <div><b id="d-mo-avg">0s</b><small>Avg Duration</small></div>
+                      <div><b id="d-mo-xp">0</b><small>XP</small></div>
+                    </div>
+                  </div>
+                  <div class="card"><b>Daily Goal</b>
+                    <div class="bar"><i id="d-goal-bar"></i></div>
+                    <small id="d-goal">0/1</small>
+                  </div>
+                </div>
+                <div class="tabbar" aria-hidden="true">
+                  <span class="on"><svg viewBox="0 0 24 24"><path d="M4 12h4v8H4zM10 7h4v13h-4zM16 4h4v16h-4z"/></svg>Dashboard</span>
+                  <span><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm1 9.6H8.5v-1.8H11V6.5h2z"/></svg>History</span>
+                  <span><svg viewBox="0 0 24 24"><path d="M8.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zm7.5 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 19c0-3.3 2.9-5.5 6.5-5.5S15 15.7 15 19v1H2zm15 1v-1c0-1.7-.6-3.2-1.6-4.3 3.3-.2 6.6 1.5 6.6 4.3v1z"/></svg>Friends</span>
+                  <span><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm0 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0 12.2a7.2 7.2 0 0 1-5.5-2.6c.9-1.6 3-2.6 5.5-2.6s4.6 1 5.5 2.6a7.2 7.2 0 0 1-5.5 2.6z"/></svg>Profile</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <figcaption class="hint" id="s-hint" aria-live="polite">Try it here. Tap Log Session on the watch.</figcaption>
       </figure>
     </div>
   </section>
@@ -290,9 +508,9 @@
 
 <section class="band band--milk">
   <div class="wrap split">
-    <figure class="stage">
+    <figure class="stage" data-lean>
       <div class="spot spot--b"></div>
-      <div class="pair">
+      <div class="pair lean">
         <div class="watch"><img src="assets/watch-menu.png" width="422" height="514" alt="Log Session at the top of the Apple Watch menu" loading="lazy" /></div>
         <div class="watch"><img src="assets/watch-session.png" width="422" height="514" alt="The Session Complete screen on Apple Watch, listing duration, motion count, frequency and heart rate" loading="lazy" /></div>
       </div>
@@ -315,27 +533,91 @@
   <div class="wrap split">
     <div class="text">
       <h2 class="display">A session a day keeps the streak.</h2>
-      <p class="copy">Every session earns XP. Hit your daily goal and your streak grows. You set the goal yourself on the Profile screen, so the bar is as high as you want it.</p>
+      <p class="copy">Every session earns XP: 10 to start, plus more the longer you go and the more motions you log. One session on a new day adds a day to your streak.</p>
+      <!-- Playable demo 2: mark days to see how the streak counts -->
+      <div class="week" id="week" hidden>
+        <div class="week-read"><b id="wk-n">0</b><span id="wk-unit">day streak</span></div>
+        <div class="week-days" id="wk-days" role="group" aria-label="The last seven days"></div>
+        <p class="copy" id="wk-msg" aria-live="polite">Tap a day to log a session on it.</p>
+      </div>
     </div>
-    <figure class="stage">
+    <figure class="stage" data-lean>
       <div class="spot spot--c"></div>
-      <div class="phone tilt-l"><img src="assets/phone-profile.png" width="1206" height="2622" alt="The Profile screen with total XP, current streak, total sessions, the daily goal stepper and a friend code" loading="lazy" /></div>
+      <div class="lean">
+        <div class="phone tilt-l"><img src="assets/phone-profile.png" width="1206" height="2622" alt="The Profile screen with total XP, current streak, total sessions, the daily goal stepper and a friend code" loading="lazy" /></div>
+      </div>
     </figure>
   </div>
 </section>
 
 <section class="band band--milk">
   <div class="wrap split">
-    <figure class="stage">
+    <!-- Playable demo 3: a frequency challenge that moves you up the leaderboard -->
+    <figure class="stage" id="demo-challenge">
       <div class="spot spot--a"></div>
-      <div class="pair">
-        <div class="phone"><img src="assets/phone-friends.png" width="1206" height="2622" alt="The Friends list with each friend's XP and streak" loading="lazy" /></div>
-        <div class="phone"><img src="assets/phone-streaks.png" width="1206" height="2622" alt="The Streaks leaderboard ranking friends by streak" loading="lazy" /></div>
+      <div class="rig rig--challenge">
+        <div class="phone">
+          <div class="screen">
+            <div class="ios ios--list">
+              <div class="ios-status"><span class="js-clock">17:08</span><span class="ios-batt"></span></div>
+              <div class="ios-body">
+                <div class="ios-title">Friends</div>
+                <div class="seg" aria-hidden="true"><span>Friends</span><span class="on">Streaks</span><span>Challenges</span></div>
+                <ol class="lb" id="lb" aria-label="Demo leaderboard"></ol>
+              </div>
+              <div class="tabbar" aria-hidden="true">
+                <span><svg viewBox="0 0 24 24"><path d="M4 12h4v8H4zM10 7h4v13h-4zM16 4h4v16h-4z"/></svg>Dashboard</span>
+                <span><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm1 9.6H8.5v-1.8H11V6.5h2z"/></svg>History</span>
+                <span class="on"><svg viewBox="0 0 24 24"><path d="M8.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zm7.5 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 19c0-3.3 2.9-5.5 6.5-5.5S15 15.7 15 19v1H2zm15 1v-1c0-1.7-.6-3.2-1.6-4.3 3.3-.2 6.6 1.5 6.6 4.3v1z"/></svg>Friends</span>
+                <span><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm0 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0 12.2a7.2 7.2 0 0 1-5.5-2.6c.9-1.6 3-2.6 5.5-2.6s4.6 1 5.5 2.6a7.2 7.2 0 0 1-5.5 2.6z"/></svg>Profile</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="watch">
+          <div class="screen">
+            <div class="wos" data-view="setup">
+              <div class="w-head">Frequency Challenge</div>
+              <div class="w-label">Select frequency:</div>
+              <div class="w-step">
+                <button type="button" id="c-less" aria-label="Lower the target frequency">−</button>
+                <b><span id="c-target">3</span><small> /sec</small></b>
+                <button type="button" id="c-more" aria-label="Raise the target frequency">+</button>
+              </div>
+              <button type="button" class="w-start" id="c-start">Start Challenge</button>
+              <div class="w-note">Follow the rhythm. Stops after 3s idle.</div>
+            </div>
+            <div class="wos" data-view="count" hidden>
+              <div class="w-count" id="c-count" aria-live="assertive">3</div>
+            </div>
+            <div class="wos" data-view="run" hidden>
+              <div class="w-head">Frequency Challenge</div>
+              <button type="button" class="w-pad" id="c-pad" aria-label="Count one motion">
+                <span class="w-beat" aria-hidden="true"></span>
+                <span class="w-time" id="c-time">00:00</span>
+              </button>
+              <div class="w-stats" id="c-stats">🍼 0</div>
+              <div class="w-note">Auto-stops after 3s idle</div>
+            </div>
+            <div class="wos" data-view="result" hidden>
+              <div class="w-done">Session Complete!</div>
+              <div class="w-sub" id="c-xp">+0 XP</div>
+              <div class="w-rows">
+                <div><span>Goal</span><b id="c-goal">3/s</b></div>
+                <div><span>Duration</span><b id="c-dur">00:00</b></div>
+                <div><span>Motion Count</span><b id="c-total">0</b></div>
+                <div><span>Your pace</span><b id="c-pace">0.0/s</b></div>
+              </div>
+              <button type="button" class="w-start" id="c-again">Go again</button>
+            </div>
+          </div>
+        </div>
       </div>
+      <figcaption class="hint" id="c-hint" aria-live="polite">Start the challenge on the watch and see where you land.</figcaption>
     </figure>
     <div class="text">
       <h2 class="display">Friends make it a contest.</h2>
-      <p class="copy">See who holds the longest streak, then take each other on in Frequency, Edge and Time challenges. Adding a friend takes three steps.</p>
+      <p class="copy">See who holds the longest streak, then take each other on in Frequency, Edge and Time challenges. Challenge sessions earn double XP. Adding a friend takes three steps.</p>
       <ol class="steps">
         <li>Find your friend code on the Profile screen.</li>
         <li>Open Friends and tap the plus button.</li>
@@ -346,8 +628,8 @@
 </section>
 
 <section class="band band--pasture close">
-  <div class="spot spot--a"></div>
-  <div class="spot spot--c"></div>
+  <div class="spot spot--a" data-drift="0.08"></div>
+  <div class="spot spot--c" data-drift="-0.06"></div>
   <div class="wrap">
     <div class="text">
       <h2 class="display">Start your streak today.</h2>
@@ -377,6 +659,349 @@
     </nav>
   </div>
 </footer>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var coarse = window.matchMedia("(pointer: coarse)").matches;
+  var HOW = coarse ? "Tap the watch face" : "Tap the watch face, or shake your cursor over it";
+
+  /* ---- shared demo state. days[6] is today. ---- */
+  var state = { days: [false, false, false, false, false, false, false], xp: 0, best: 0, sessions: [] };
+  var FRIENDS = [
+    { id: "a", name: "ilovemilk", streak: 1, xp: 40 },
+    { id: "b", name: "Melancholy Otter", streak: 1, xp: 40 },
+    { id: "c", name: "Milk bucket", streak: 0, xp: 0 }
+  ];
+
+  /* Same formula as the app: base 10, +1 per 30s, +1 per 10 motions, doubled for challenges. */
+  function xpFor(seconds, motions, challenge) {
+    return (10 + Math.floor(seconds / 30) + Math.floor(motions / 10)) * (challenge ? 2 : 1);
+  }
+  /* A streak is consecutive days ending today, or yesterday if today is still open. */
+  function streak() {
+    var i = state.days[6] ? 6 : 5, n = 0;
+    while (i >= 0 && state.days[i]) { n++; i--; }
+    return n;
+  }
+  function clock(seconds) {
+    var s = Math.max(0, Math.floor(seconds));
+    return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
+  }
+  function plural(n, word) { return n + " " + word + (n === 1 ? "" : "s"); }
+  function show(root, view) {
+    root.querySelectorAll(".wos").forEach(function (el) { el.hidden = el.dataset.view !== view; });
+  }
+  function nudge(el, frames, ms) {
+    if (!calm && el && el.animate) el.animate(frames, { duration: ms || 160, easing: "ease-out" });
+  }
+  function burst(stage, anchor) {
+    if (calm || !stage.animate) return;
+    var a = anchor.getBoundingClientRect(), s = stage.getBoundingClientRect();
+    var colors = ["var(--milk)", "var(--ink)", "var(--pasture-deep)", "var(--milk-shade)"];
+    for (var i = 0; i < 14; i++) {
+      var bit = document.createElement("i");
+      bit.className = "bit";
+      bit.style.background = colors[i % colors.length];
+      bit.style.left = (a.left + a.width / 2 - s.left) + "px";
+      bit.style.top = (a.top + a.height / 2 - s.top) + "px";
+      stage.appendChild(bit);
+      var angle = (i / 14) * Math.PI * 2, reach = 90 + Math.random() * 90;
+      bit.animate(
+        [{ transform: "translate(-50%,-50%) scale(1)", opacity: 1 },
+         { transform: "translate(" + (Math.cos(angle) * reach - 7) + "px," + (Math.sin(angle) * reach - 6) + "px) scale(.4) rotate(140deg)", opacity: 0 }],
+        { duration: 700 + Math.random() * 300, easing: "cubic-bezier(.2,.8,.3,1)" }
+      ).onfinish = (function (el) { return function () { el.remove(); }; })(bit);
+    }
+  }
+
+  /* One motion per tap on the pad, or per cursor swing over the watch, like a wrist swing. */
+  function motionInput(pad, zone, isLive, onMotion) {
+    pad.addEventListener("pointerdown", function () { if (isLive()) onMotion(); });
+    pad.addEventListener("click", function (e) { if (e.detail === 0 && isLive()) onMotion(); }); /* keyboard */
+    var px = null, py = null, sx = 0, sy = 0, last = 0;
+    zone.addEventListener("pointermove", function (e) {
+      if (e.pointerType !== "mouse" || !isLive()) { px = null; return; }
+      if (px === null) { px = e.clientX; py = e.clientY; sx = sy = 0; return; }
+      var dx = e.clientX - px, dy = e.clientY - py;
+      px = e.clientX; py = e.clientY;
+      if (sx * dx + sy * dy < 0) {
+        if (Math.hypot(sx, sy) > 30 && e.timeStamp - last > 70) { last = e.timeStamp; onMotion(); }
+        sx = dx; sy = dy;
+      } else { sx += dx; sy += dy; }
+    });
+    zone.addEventListener("pointerleave", function () { px = null; });
+  }
+
+  /* ---- renderers ---- */
+  function set(id, text) {
+    var el = $(id);
+    if (el.textContent !== String(text)) {
+      el.textContent = text;
+      nudge(el, [{ transform: "scale(1.35)" }, { transform: "scale(1)" }], 320);
+    }
+  }
+  function renderDash() {
+    var n = state.sessions.length;
+    var total = state.sessions.reduce(function (sum, s) { return sum + s.seconds; }, 0);
+    var avg = n ? Math.round(total / n) : 0;
+    var avgText = avg >= 60 ? Math.floor(avg / 60) + "m" : avg + "s";
+    set("d-streak", plural(streak(), "day"));
+    set("d-xp", state.xp);
+    set("d-wk-n", n); set("d-mo-n", n);
+    set("d-wk-avg", avgText); set("d-mo-avg", avgText);
+    set("d-wk-xp", state.xp); set("d-mo-xp", state.xp);
+    set("d-goal", Math.min(n, 1) + "/1");
+    $("d-goal-bar").style.width = n ? "100%" : "0";
+  }
+
+  var dayButtons = [];
+  function buildWeek() {
+    var wrap = $("wk-days"), now = new Date();
+    for (var i = 0; i < 7; i++) {
+      var d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (6 - i));
+      var name = d.toLocaleDateString("en", { weekday: "long" });
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = i === 6 ? "Today" : name.slice(0, 3);
+      b.dataset.name = i === 6 ? "today" : name;
+      b.setAttribute("aria-pressed", "false");
+      b.addEventListener("click", (function (index) {
+        return function () { state.days[index] = !state.days[index]; renderAll(); };
+      })(i));
+      wrap.appendChild(b);
+      dayButtons.push(b);
+    }
+    $("week").hidden = false;
+  }
+  function renderWeek() {
+    var n = streak(), any = state.days.some(Boolean);
+    dayButtons.forEach(function (b, i) {
+      b.setAttribute("aria-pressed", String(state.days[i]));
+      b.setAttribute("aria-label", "Session on " + b.dataset.name + (state.days[i] ? ", logged" : ", none"));
+    });
+    set("wk-n", n);
+    var start = (state.days[6] ? 6 : 5) - n;       /* first day before the current run */
+    var earlier = state.days.slice(0, Math.max(0, start)).some(Boolean);
+    var msg;
+    if (!any) msg = "Tap a day to log a session on it.";
+    else if (n === 0) msg = "A day went by without a session, so the next one starts again at 1.";
+    else if (!state.days[6]) msg = plural(n, "day") + " so far. Log one today to make it " + (n + 1) + ".";
+    else if (earlier) msg = "The skipped day reset the count. This run stands at " + plural(n, "day") + ".";
+    else msg = plural(n, "day") + " in a row, today included.";
+    $("wk-msg").textContent = msg;
+  }
+
+  function renderBoard() {
+    var list = $("lb");
+    var rows = FRIENDS.concat([{ id: "you", name: "You", streak: streak(), xp: state.xp, you: true }]);
+    rows.sort(function (p, q) { return q.streak - p.streak || q.xp - p.xp || (p.you ? 1 : q.you ? -1 : 0); });
+    var before = {};
+    list.querySelectorAll("li").forEach(function (li) { before[li.dataset.id] = li.getBoundingClientRect().top; });
+    rows.forEach(function (r, i) {
+      var li = list.querySelector('[data-id="' + r.id + '"]');
+      if (!li) {
+        li = document.createElement("li");
+        li.dataset.id = r.id;
+        if (r.you) li.className = "is-you";
+        li.innerHTML = '<span class="lb-rank"></span><span class="lb-av"></span>' +
+          '<span class="lb-name"><b></b><small></small></span><span class="lb-score"><b></b><small></small></span>';
+        li.querySelector(".lb-av").textContent = r.name.charAt(0).toUpperCase();
+        li.querySelector(".lb-name b").textContent = r.name;
+      }
+      var rank = li.querySelector(".lb-rank");
+      rank.textContent = "#" + (i + 1);
+      rank.classList.toggle("is-top", i < 3);
+      li.querySelector(".lb-name small").textContent = (r.you ? state.best : r.streak) + "d best";
+      li.querySelector(".lb-score b").textContent = "🔥 " + r.streak;
+      li.querySelector(".lb-score small").textContent = r.xp + " XP";
+      list.appendChild(li);
+    });
+    list.querySelectorAll("li").forEach(function (li) {
+      var was = before[li.dataset.id], now = li.getBoundingClientRect().top;
+      if (was !== undefined && Math.abs(was - now) > 1) {
+        nudge(li, [{ transform: "translateY(" + (was - now) + "px)" }, { transform: "none" }], 450);
+      }
+    });
+    return rows.findIndex(function (r) { return r.you; }) + 1;
+  }
+  function renderAll() {
+    state.best = Math.max(state.best, streak());
+    renderDash(); renderWeek();
+    return renderBoard();
+  }
+  function logSession(seconds, motions, challenge) {
+    var xp = xpFor(seconds, motions, challenge);
+    state.sessions.push({ seconds: seconds, motions: motions, xp: xp });
+    state.xp += xp;
+    state.days[6] = true;
+    return { xp: xp, rank: renderAll() };
+  }
+
+  /* ---- demo 1: a session on the watch ---- */
+  (function () {
+    var stage = $("demo-session"), watch = stage.querySelector(".watch"), spot = stage.querySelector(".spot");
+    var hint = $("s-hint"), toggle = $("s-toggle"), label = toggle.querySelector("span");
+    var PLAY = "M2.5 1.2v7.6L9 5z", STOP = "M2 2h6v6H2z";
+    var live = false, t0 = 0, count = 0, tick = 0;
+
+    function reset() {
+      live = false; count = 0; clearInterval(tick);
+      $("s-time").textContent = "00:00";
+      $("s-stats").textContent = "Tap Start to begin";
+      toggle.classList.remove("is-stop");
+      label.textContent = "Start";
+      toggle.querySelector("path").setAttribute("d", PLAY);
+      $("s-back").hidden = false;
+    }
+    function elapsed() { return (performance.now() - t0) / 1000; }
+    function finish() {
+      var secs = elapsed(), whole = Math.floor(secs);
+      clearInterval(tick); live = false;
+      $("r-dur").textContent = clock(whole);
+      $("r-count").textContent = count;
+      $("r-freq").textContent = (count / Math.max(secs, 1)).toFixed(1) + "/sec";
+      show(watch, "done");
+      var out = logSession(whole, count, false);
+      burst(stage, watch);
+      hint.textContent = "Synced. That session earned " + out.xp + " XP and started your streak. Heart rate needs the real watch.";
+    }
+    $("s-open").addEventListener("click", function () {
+      reset(); show(watch, "play");
+      hint.textContent = "Press Start, then keep moving until you press Stop.";
+      toggle.focus({ preventScroll: true });
+    });
+    $("s-back").addEventListener("click", function () { reset(); show(watch, "menu"); hint.textContent = "Try it here. Tap Log Session on the watch."; });
+    $("s-done").addEventListener("click", function () { reset(); show(watch, "menu"); hint.textContent = "Log another, or scroll down to see what a streak and a challenge do."; });
+    toggle.addEventListener("click", function () {
+      if (live) { finish(); return; }
+      live = true; count = 0; t0 = performance.now();
+      toggle.classList.add("is-stop");
+      label.textContent = "Stop";
+      toggle.querySelector("path").setAttribute("d", STOP);
+      $("s-back").hidden = true;
+      $("s-stats").textContent = "🍼 0 Motion Count";
+      hint.textContent = HOW + ". Every swing counts as one motion.";
+      tick = setInterval(function () {
+        $("s-time").textContent = clock(elapsed());
+        if (elapsed() > 120) finish();
+      }, 200);
+    });
+    motionInput($("s-pad"), stage, function () { return live; }, function () {
+      count++;
+      $("s-stats").textContent = "🍼 " + count + " Motion Count";
+      nudge(watch, [{ scale: ".96" }, { scale: "1" }], 140);
+      nudge(spot, [{ scale: "1.035" }, { scale: "1" }], 220);
+      if (navigator.vibrate) { try { navigator.vibrate(8); } catch (e) {} }
+    });
+  })();
+
+  /* ---- demo 3: frequency challenge ---- */
+  (function () {
+    var stage = $("demo-challenge"), watch = stage.querySelector(".watch"), spot = stage.querySelector(".spot");
+    var hint = $("c-hint"), run = watch.querySelector('[data-view="run"]');
+    var target = 3, live = false, t0 = 0, lastMotion = 0, count = 0, tick = 0, pulse = 0;
+
+    function setTarget(n) { target = Math.min(6, Math.max(1, n)); $("c-target").textContent = target; }
+    $("c-less").addEventListener("click", function () { setTarget(target - 1); });
+    $("c-more").addEventListener("click", function () { setTarget(target + 1); });
+
+    function begin() {
+      live = true; count = 0; t0 = lastMotion = performance.now();
+      $("c-time").textContent = "00:00";
+      $("c-stats").textContent = "🍼 0";
+      run.style.setProperty("--beat", (1 / target) + "s");
+      run.classList.add("is-beating");
+      show(watch, "run");
+      $("c-pad").focus({ preventScroll: true });
+      hint.textContent = HOW + " in time with the ring. It ends when you stop for three seconds.";
+      if (navigator.vibrate) pulse = setInterval(function () { try { navigator.vibrate(12); } catch (e) {} }, 1000 / target);
+      tick = setInterval(function () {
+        var now = performance.now();
+        $("c-time").textContent = clock((now - t0) / 1000);
+        if (now - lastMotion > 3000 || now - t0 > 60000) end();
+      }, 100);
+    }
+    function end() {
+      clearInterval(tick); clearInterval(pulse); live = false;
+      run.classList.remove("is-beating");
+      var secs = Math.max(0, (lastMotion - t0) / 1000), whole = Math.round(secs);
+      var pace = count > 1 ? (count - 1) / Math.max(secs, 0.2) : 0;
+      var out = logSession(whole, count, true);
+      $("c-xp").textContent = "+" + out.xp + " XP";
+      $("c-goal").textContent = target + "/s";
+      $("c-dur").textContent = clock(whole);
+      $("c-total").textContent = count;
+      $("c-pace").textContent = pace.toFixed(1) + "/s";
+      show(watch, "result");
+      if (count) burst(stage, watch);
+      var verdict = !count ? "No motions that time."
+        : Math.abs(pace - target) <= 0.4 ? "Right on the rhythm at " + pace.toFixed(1) + " a second."
+        : pace > target ? "You ran ahead of the rhythm at " + pace.toFixed(1) + " a second."
+        : "You fell behind the rhythm at " + pace.toFixed(1) + " a second.";
+      hint.textContent = verdict + " " + out.xp + " XP, doubled for a challenge. You are #" + out.rank + " of 4 on this demo board.";
+    }
+    $("c-start").addEventListener("click", function () {
+      var n = 3, el = $("c-count");
+      show(watch, "count");
+      hint.textContent = "Get ready.";
+      (function step() {
+        if (n === 0) { begin(); return; }
+        el.textContent = n;
+        nudge(el, [{ transform: "scale(.2)", opacity: 0 }, { transform: "scale(1)", opacity: 1 }], 380);
+        n--;
+        setTimeout(step, calm ? 500 : 700);
+      })();
+    });
+    $("c-again").addEventListener("click", function () { show(watch, "setup"); hint.textContent = "Pick a faster rhythm, or beat your own pace."; });
+    motionInput($("c-pad"), stage, function () { return live; }, function () {
+      count++; lastMotion = performance.now();
+      $("c-stats").textContent = "🍼 " + count;
+      nudge(watch, [{ scale: ".96" }, { scale: "1" }], 140);
+      nudge(spot, [{ scale: "1.035" }, { scale: "1" }], 220);
+    });
+  })();
+
+  /* ---- ambient: live clocks, drifting spots, leaning screenshots ---- */
+  function setClocks() {
+    var t = new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+    document.querySelectorAll(".js-clock").forEach(function (el) { el.textContent = t; });
+  }
+  setClocks(); setInterval(setClocks, 15000);
+
+  if (!calm) {
+    var drifters = Array.prototype.slice.call(document.querySelectorAll("[data-drift]")), queued = false;
+    var drift = function () {
+      queued = false;
+      var mid = window.innerHeight / 2;
+      drifters.forEach(function (el) {
+        var r = el.parentElement.getBoundingClientRect();
+        el.style.translate = "0 " + ((r.top + r.height / 2 - mid) * parseFloat(el.dataset.drift)).toFixed(1) + "px";
+      });
+    };
+    window.addEventListener("scroll", function () { if (!queued) { queued = true; requestAnimationFrame(drift); } }, { passive: true });
+    drift();
+
+    document.querySelectorAll("[data-lean]").forEach(function (stage) {
+      var target = stage.querySelector(".lean");
+      stage.addEventListener("pointermove", function (e) {
+        if (e.pointerType !== "mouse") return;
+        var r = stage.getBoundingClientRect();
+        target.style.setProperty("--ry", (((e.clientX - r.left) / r.width - 0.5) * 16).toFixed(1) + "deg");
+        target.style.setProperty("--rx", ((0.5 - (e.clientY - r.top) / r.height) * 12).toFixed(1) + "deg");
+      });
+      stage.addEventListener("pointerleave", function () {
+        target.style.setProperty("--ry", "0deg"); target.style.setProperty("--rx", "0deg");
+      });
+    });
+  }
+
+  buildWeek();
+  renderAll();
+})();
+</script>
 
 </body>
 </html>
